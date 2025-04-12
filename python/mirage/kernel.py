@@ -13,6 +13,7 @@ from .threadblock import *
 from .visualizer import *
 from .utils import *
 from .triton_profiler import *
+from .quantization import *
 from .global_config import global_config
 from .graph_dataset import graph_dataset
 
@@ -629,3 +630,14 @@ class KNGraph:
         operators = self.cygraph.get_graph_structure()
         self.visualizer = visualizer(file_name)
         self.visualizer.draw_graphs(operators)
+
+    def quantize(self, mode="tensor"):
+        operators = self.cygraph.get_graph_structure()
+        if mode == "tensor": 
+            quantize_per_tensor(operators)
+        elif mode == "channel":
+            quantize_per_channel(operators)
+        elif mode == "block":
+            quantize_per_block(operators)
+        else: 
+            raise ValueError(f"Unsupported quantization mode: {mode}")
